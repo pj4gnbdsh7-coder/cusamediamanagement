@@ -4,7 +4,7 @@
   "description": "CUSA Media Department Management Discord Bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node deploy-commands.js && node index.js"
   },
   "dependencies": {
     "discord.js": "^14.25.1",
