@@ -17,4 +17,4 @@ client.once('ready', () => {
 
 client.on('error', console.error);
 
-client.login(process.env.DISCORD_TOKEN);
+client.login(process.env.MTU0NDE5MzQxMDI3MTgwNTQ0MA.Gro79B.uIvvj_bF-ASbKHO7j7DEt8dwa0UqIw8RzfSYO8);
