@@ -3,39 +3,45 @@ const fs = require('fs');
 const path = require('path');
 
 const commands = [];
+
 const commandsPath = path.join(__dirname, 'commands');
 
-const commandFiles = fs
-    .readdirSync(commandsPath)
-    .filter(file => file.endsWith('.js'));
+for (const file of fs.readdirSync(commandsPath)) {
+    if (!file.endsWith('.js')) continue;
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+    const command = require(path.join(commandsPath, file));
 
-    if ('data' in command && 'execute' in command) {
+    if (command.data && command.execute) {
         commands.push(command.data.toJSON());
     }
 }
 
-const rest = new REST({ version: '10' })
-    .setToken(process.env.DISCORD_TOKEN);
+console.log(`📦 Found ${commands.length} commands:`);
+console.log(commands.map(command => `/${command.name}`).join(', '));
+
+const rest = new REST({ version: '10' }).setToken(
+    process.env.DISCORD_TOKEN
+);
 
 async function deploy() {
     try {
-        console.log(`🔄 Registering ${commands.length} slash commands...`);
+        console.log(`🤖 Application ID: ${process.env.CLIENT_ID}`);
+        console.log(`🏠 Server ID: ${process.env.GUILD_ID}`);
 
         await rest.put(
             Routes.applicationGuildCommands(
                 process.env.CLIENT_ID,
                 process.env.GUILD_ID
             ),
-            { body: commands }
+            {
+                body: commands
+            }
         );
 
-        console.log('✅ Slash commands registered!');
+        console.log('✅ Commands successfully registered!');
     } catch (error) {
-        console.error('❌ Command registration failed:', error);
+        console.error('❌ Failed to register commands:');
+        console.error(error);
     }
 }
 
